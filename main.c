@@ -3,15 +3,15 @@
 #include <string.h>
 #include <ctype.h>
 
-//ETAPA VALIDA«√O DE DADOS.
+//ETAPA VALIDA√á√ÉO DE DADOS.
 #define MAX_SIZE 50
    int validarCampo(char campo[]) {
-    // Verificar se o campo est· em branco
+    // Verificar se o campo est√° em branco
     if (strlen(campo) == 0) {
         return 0;
     }
 
-    // Verificar se o campo contÈm caracteres inv·lidos
+    // Verificar se o campo cont√©m caracteres inv√°lidos
       for (int i = 0; i < strlen(campo); i++) {
         if (!isalpha(campo[i]) && !isdigit(campo[i]) && campo[i] != ' ' && campo[i] != '@' && campo[i] != '.') {
             return 0;
