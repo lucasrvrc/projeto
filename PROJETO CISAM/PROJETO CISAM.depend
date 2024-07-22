@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1721532436 source:c:\users\isaac\onedrive\Área de trabalho\projeto cisam\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+
