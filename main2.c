@@ -67,7 +67,6 @@ int main(int argc, char *argv[]) {
     gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-    // Criar o botão
     button = gtk_button_new_with_label("Upload de Planilha Excel");
     g_signal_connect(button, "clicked", G_CALLBACK(open_file), window);
     gtk_box_pack_start(GTK_BOX(vbox), button, TRUE, TRUE, 0);
