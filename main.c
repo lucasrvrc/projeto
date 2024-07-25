@@ -1,52 +1,60 @@
-#include <gtk/gtk.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-static void on_file_selected(GtkWidget *widget, gpointer label) {
-    GtkFileChooser *chooser = GTK_FILE_CHOOSER(widget);
-    gchar *filename = gtk_file_chooser_get_filename(chooser);
-    gtk_label_set_text(GTK_LABEL(label), filename);
-    g_free(filename);
-}
+//CODIGOS PARA O PROJETO
+int verificarCEP(const char* cep) {
+    int tamanho = strlen(cep);
 
-static void on_upload_clicked(GtkWidget *widget, gpointer label) {
-    const gchar *filename = gtk_label_get_text(GTK_LABEL(label));
-    if (g_strcmp0(filename, "") == 0) {
-        gtk_label_set_text(GTK_LABEL(label), "Nenhum arquivo");
-        return;
+    if (tamanho != 8) {
+        return 0; // CEP inválido
     }
 
-    gtk_label_set_text(GTK_LABEL(label), "Upload feito com sucesso!");
+    for (int i = 0; i < tamanho; i++) {
+        if (cep[i] < '0' || cep[i] > '9') {
+            return 0; // CEP inválido
+        }
+    }
+
+    return 1; // CEP válido
 }
 
-int main(int argc, char *argv[]) {
-    GtkWidget *window;
-    GtkWidget *grid;
-    GtkWidget *label;
-    GtkWidget *file_chooser_button;
-    GtkWidget *upload_button;
+int verificarCPF(const char* cpf) {
+    int tamanho = strlen(cpf);
 
-    gtk_init(&argc, &argv);
+    if (tamanho != 11) {
+        return 0; // CPF inválido
+    }
 
-    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(window), "Upload de Planilhas");
-    gtk_window_set_default_size(GTK_WINDOW(window), 400, 200);
-    g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    for (int i = 0; i < tamanho; i++) {
+        if (cpf[i] < '0' || cpf[i] > '9') {
+            return 0; // CPF inválido
+        }
+    }
 
-    grid = gtk_grid_new();
-    gtk_container_add(GTK_CONTAINER(window), grid);
-
-    label = gtk_label_new("");
-    gtk_grid_attach(GTK_GRID(grid), label, 0, 0, 2, 1);
-
-    file_chooser_button = gtk_file_chooser_button_new("Escolher arquivo", GTK_FILE_CHOOSER_ACTION_OPEN);
-    gtk_grid_attach(GTK_GRID(grid), file_chooser_button, 0, 1, 1, 1);
-    g_signal_connect(file_chooser_button, "selection-changed", G_CALLBACK(on_file_selected), label);
-
-    upload_button = gtk_button_new_with_label("Adicionar arquivos");
-    gtk_grid_attach(GTK_GRID(grid), upload_button, 1, 1, 1, 1);
-    g_signal_connect(upload_button, "clicked", G_CALLBACK(on_upload_clicked), label);
-
-    gtk_widget_show_all(window);
-    gtk_main();
-
-    return 0;
+    return 1; // CPF válido
 }
+
+int validarCampo(char campo[]) {
+    // Verificar se o campo está em branco
+    if (strlen(campo) == 0) {
+        printf("campo em branco.");
+        return 0;
+    }
+
+   // Verificar se o campo contém caracteres inválidos
+    for (int i = 0; i < strlen(campo); i++) {
+        if (!isdigit(campo[i])) {
+            printf("campo invalido.");
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+void TratamentoLinha(char *linha){
+     char *campos[QTD_CAMPOS];
+     int NumCampo = 0;
+     while (token != NULL && NumCampo < QTD_CAMPOS){
+        token = strtok(NULL, ";");
+        campos[NumCampo++] = token
