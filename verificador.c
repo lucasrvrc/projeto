@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 #include "verificador.h"
 
-
-//CODIGOS PARA O PROJETO
 int verificarCEP(const char* cep) {
     int tamanho = strlen(cep);
 
@@ -38,26 +37,34 @@ int verificarCPF(const char* cpf) {
 }
 
 int validarCampo(char campo[]) {
-    // Verificar se o campo está em branco
     if (strlen(campo) == 0) {
-        printf("campo em branco.");
-        return 0;
+        return 0; // Campo em branco
     }
 
-   // Verificar se o campo contém caracteres inválidos
     for (int i = 0; i < strlen(campo); i++) {
         if (!isdigit(campo[i])) {
-            printf("campo invalido.");
-            return 0;
+            return 0; // Campo inválido
         }
     }
 
-    return 1;
+    return 1; // Campo válido
 }
 
-void TratamentoLinha(char *linha){
-     char *campos[QTD_CAMPOS];
-     int NumCampo = 0;
-     while (token != NULL && NumCampo < QTD_CAMPOS){
+void TratamentoLinha(char *linha) {
+    char *campos[QTD_CAMPOS];
+    int NumCampo = 0;
+    char *token = strtok(linha, ";");
+
+    while (token != NULL && NumCampo < QTD_CAMPOS) {
+        campos[NumCampo++] = token;
         token = strtok(NULL, ";");
-        campos[NumCampo++] = token
+    }
+
+    for (int i = 0; i < NumCampo; i++) {
+        if (validarCampo(campos[i])) {
+            printf("Campo %d válido: %s\n", i, campos[i]);
+        } else {
+            printf("Campo %d inválido: %s\n", i, campos[i]);
+        }
+    }
+}

@@ -1,25 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-
-
-
-#ifndef VERIFCADOR_H
+#ifndef VERIFICADOR_H
 #define VERIFICADOR_H
 
+#define QTD_CAMPOS 10
 
 int verificarCEP(const char* cep);
-
 int verificarCPF(const char* cpf);
-
 int validarCampo(char campo[]);
-
 void TratamentoLinha(char *linha);
 
-#endif
-
-
-
-
-
-
+#endif // VERIFICADOR_H
