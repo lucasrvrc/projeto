@@ -2,8 +2,6 @@
 #include "interface.h"
 #include "verificador.h"
 
-void validar_planilha(const gchar *filename, GtkWidget *resultado_text_view);
-
 static void on_file_selected(GtkWidget *widget, gpointer label) {
     GtkFileChooser *chooser = GTK_FILE_CHOOSER(widget);
     gchar *filename = gtk_file_chooser_get_filename(chooser);
@@ -18,10 +16,11 @@ static void on_upload_clicked(GtkWidget *widget, gpointer data) {
 
     const gchar *filename = gtk_label_get_text(GTK_LABEL(label));
     if (g_strcmp0(filename, "") == 0) {
-        gtk_label_set_text(GTK_LABEL(label), "Nenhum arquivo");
+        gtk_label_set_text(GTK_LABEL(label), "Nenhum arquivo selecionado");
         return;
     }
 
+    // Chama a função de validação
     validar_planilha(filename, resultado_text_view);
 }
 
@@ -33,17 +32,20 @@ void inicializar_interface(int argc, char *argv[]) {
     GtkWidget *upload_button;
     GtkWidget *resultado_text_view;
     GtkWidget *resultado_scrolled_window;
-    GtkTextBuffer *text_buffer;
 
     gtk_init(&argc, &argv);
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Upload de Planilhas");
-    gtk_window_set_default_size(GTK_WINDOW(window), 600, 400);
+    gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);  // Aumenta o tamanho da janela
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
     grid = gtk_grid_new();
     gtk_container_add(GTK_CONTAINER(window), grid);
+
+    // Adiciona expansibilidade à grid
+    gtk_grid_set_row_homogeneous(GTK_GRID(grid), FALSE);
+    gtk_grid_set_column_homogeneous(GTK_GRID(grid), FALSE);
 
     label = gtk_label_new("");
     gtk_grid_attach(GTK_GRID(grid), label, 0, 0, 2, 1);
@@ -56,6 +58,9 @@ void inicializar_interface(int argc, char *argv[]) {
     gtk_grid_attach(GTK_GRID(grid), upload_button, 1, 1, 1, 1);
 
     resultado_text_view = gtk_text_view_new();
+    gtk_widget_set_vexpand(resultado_text_view, TRUE); // Faz com que a área de texto expanda verticalmente
+    gtk_widget_set_hexpand(resultado_text_view, TRUE); // Faz com que a área de texto expanda horizontalmente
+
     resultado_scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_container_add(GTK_CONTAINER(resultado_scrolled_window), resultado_text_view);
     gtk_grid_attach(GTK_GRID(grid), resultado_scrolled_window, 0, 2, 2, 1);
@@ -80,9 +85,13 @@ void validar_planilha(const gchar *filename, GtkWidget *resultado_text_view) {
 
     char linha[256];
     while (fgets(linha, sizeof(linha), file)) {
-        TratamentoLinha(linha);
-        gtk_text_buffer_insert_at_cursor(text_buffer, linha, -1);
+        linha[strcspn(linha, "\n")] = 0; // Remove o caractere de nova linha
+        if (TratamentoLinha(linha, text_buffer)) { // Processa e valida a linha
+            gtk_text_buffer_insert_at_cursor(text_buffer, linha, -1);
+            gtk_text_buffer_insert_at_cursor(text_buffer, "\n", -1);
+        }
     }
+
     fclose(file);
 
     gtk_text_buffer_insert_at_cursor(text_buffer, "Upload feito com sucesso!\n", -1);

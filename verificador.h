@@ -1,11 +1,9 @@
 #ifndef VERIFICADOR_H
 #define VERIFICADOR_H
 
-#define QTD_CAMPOS 10
-
 int verificarCEP(const char* cep);
 int verificarCPF(const char* cpf);
 int validarCampo(char campo[]);
-void TratamentoLinha(char *linha);
+int TratamentoLinha(char *linha, GtkTextBuffer *text_buffer);
 
-#endif // VERIFICADOR_H
+#endif

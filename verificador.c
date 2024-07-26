@@ -2,7 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <gtk/gtk.h>
 #include "verificador.h"
+
+#define QTD_CAMPOS 3
 
 int verificarCEP(const char* cep) {
     int tamanho = strlen(cep);
@@ -37,23 +40,26 @@ int verificarCPF(const char* cpf) {
 }
 
 int validarCampo(char campo[]) {
+    // Verificar se o campo está em branco
     if (strlen(campo) == 0) {
-        return 0; // Campo em branco
+        return 0;
     }
 
+    // Verificar se o campo contém caracteres inválidos
     for (int i = 0; i < strlen(campo); i++) {
         if (!isdigit(campo[i])) {
-            return 0; // Campo inválido
+            return 0;
         }
     }
 
-    return 1; // Campo válido
+    return 1;
 }
 
-void TratamentoLinha(char *linha) {
+int TratamentoLinha(char *linha, GtkTextBuffer *text_buffer) {
     char *campos[QTD_CAMPOS];
     int NumCampo = 0;
     char *token = strtok(linha, ";");
+    int invalido = 0;
 
     while (token != NULL && NumCampo < QTD_CAMPOS) {
         campos[NumCampo++] = token;
@@ -61,10 +67,13 @@ void TratamentoLinha(char *linha) {
     }
 
     for (int i = 0; i < NumCampo; i++) {
-        if (validarCampo(campos[i])) {
-            printf("Campo %d válido: %s\n", i, campos[i]);
-        } else {
-            printf("Campo %d inválido: %s\n", i, campos[i]);
+        if (!validarCampo(campos[i])) {
+            invalido = 1;
+            char msg[256];
+            snprintf(msg, sizeof(msg), "Campo %d inválido: %s\n", i, campos[i]);
+            gtk_text_buffer_insert_at_cursor(text_buffer, msg, -1);
         }
     }
+
+    return invalido;
 }
